@@ -76,6 +76,8 @@ public:
         calculateMetrics(homeBucket, comparisons);
     }
 
+
+
     bool search(int value, int& comparisons) {
         int index = hashFunction(value);
         int homeBucket = index;
@@ -102,6 +104,8 @@ public:
         return false;
     }
 
+
+
     void printArrays(string testName) {
         cout << "Arrays for Test: " << testName << endl;
         cout << "Linear Open Addressing Array:" << endl;
@@ -111,9 +115,13 @@ public:
         }
     }
 
+
+
     void printMetrics() {
         // Print metrics
     }
+
+
 
     void insertValuesFromFile(string filename) {
         ifstream file(filename);
@@ -129,6 +137,8 @@ public:
         }
     }
 
+
+
     void insertRandomValues() {
         srand(time(nullptr));
         for (int i = 0; i < ARRAY_SIZE; ++i) {
@@ -136,6 +146,8 @@ public:
             linearProbingInsert(value);
         }
     }
+
+
 
     void calculateMetrics(int homeBucket, int comparisons) {
         counters[0]++; // Total values inserted
