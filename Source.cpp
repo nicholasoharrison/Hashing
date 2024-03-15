@@ -25,22 +25,23 @@ private:
 
 public:
     // Metric counters array
-    int counters[13];
+    int counters[14];
     
 
 
     LinearOpenHash() {
         resetCounters();
+        counters[13] = 0;
     }
     
 
 
     void resetCounters() {
-        for (int i = 0; i < 13; ++i) {
-            counters[i] = 0;
+        for (int i = 0; i < 14; i++) {
+            this->counters[i] = 0;
         }
 
-        for (int i = 0; i < ARRAY_SIZE; ++i) {
+        for (int i = 0; i < ARRAY_SIZE; i++) {
             linearOpenArray[i].keyValue = 0;
             linearOpenArray[i].keyCount = 0;
             linearOpenArray[i].chainIndex = -1;
@@ -58,28 +59,54 @@ public:
         int index = hashFunction(value);
         int homeBucket = index;
         int comparisons = 0;
+        int dupValStart = counters[3];
 
         while (linearOpenArray[index].keyValue != 0) {
             if (linearOpenArray[index].keyValue == value) {
                 linearOpenArray[index].keyCount++;
-                calculateMetrics(homeBucket, comparisons);
+                counters[3]++; // Duplicate values
+                counters[0]++;
+                //calculateMetrics(homeBucket, comparisons);
                 return;
             }
+            
             index = (index + 1) % ARRAY_SIZE;
             counters[7]++; // Total distance from home (0 if direct insert)
             comparisons++;
+        }
+
+        if (dupValStart == counters[3])
+        {
+            counters[1]++; //Unique values
         }
 
         linearOpenArray[index].keyValue = value;
         linearOpenArray[index].keyCount = 1;
         linearOpenArray[index].chainIndex = -1;
 
-        calculateMetrics(homeBucket, comparisons);
+        counters[0]++; // Total values inserted
+
+        if (comparisons == 0) {
+            counters[4]++; // Direct inserts
+        }
+        else {
+            counters[2]++; // Duplicate of bucket
+            counters[5]++; // Non-direct inserts
+        }
+
+        if (comparisons > counters[12])
+        {
+            counters[12] = comparisons;
+            counters[13] = linearOpenArray[index].keyValue;
+        }
+
+        //calculateMetrics(homeBucket, comparisons);
     }
 
 
 
     bool search(int value, int& comparisons) {
+        counters[6]++;
         int index = hashFunction(value);
         int homeBucket = index;
         comparisons = 0;
@@ -118,12 +145,6 @@ public:
 
 
 
-    void printMetrics() {
-        // Print metrics
-    }
-
-
-
     void insertValuesFromFile(string filename) {
         ifstream file(filename);
         if (file.is_open()) {
@@ -150,39 +171,40 @@ public:
 
 
 
-    void calculateMetrics(int homeBucket, int comparisons) {
-        counters[0]++; // Total values inserted
-
-        if (comparisons == 0) {
-            counters[1]++; // Unique values
-            counters[4]++; // Direct inserts
-            // Total distance from home for direct inserts will always be 0
-        }
-        else {
-            counters[2]++; // Duplicates
-            counters[5]++; // Non-direct inserts
-        }
-
-        counters[8] += comparisons; // Total comparisons
-        if (comparisons > counters[9]) {
-            counters[9] = comparisons; // Largest number of comparisons
-        }
-
-        if (comparisons == 0) {
-            counters[10]++; // Direct accesses
-        }
-        else {
-            counters[11]++; // Indirect accesses
-        }
-
-        if (abs(homeBucket - hashFunction(linearOpenArray[counters[0] - 1].keyValue)) > counters[12]) {
-            counters[12] = abs(homeBucket - hashFunction(linearOpenArray[counters[0] - 1].keyValue)); // Largest distance from the home bucket
-        }
-    }
+  
 
 
    
 };
+
+
+
+void printMetrics(LinearOpenHash l) {
+    cout << "          \n\n\n\n    Operation Counts";
+    cout << "\n                                          Linear              Chain";
+    cout << "\nNumber of key values inserted              "<<l.counters[0];
+    cout << "\n   Unique values                           "<<l.counters[1];
+    cout << "\n   Duplicate values                        "<<l.counters[3];
+    cout << "\n";
+    cout << "\nCollisions";
+    cout << "\n   Number of collisions                    "<<l.counters[2];
+    cout << "\n  Distance from home bucket";
+    cout << "\n       Number of direct inserts            "<<l.counters[4];
+    cout << "\n       Number of non-direct inserts        "<<l.counters[5];
+    cout << "\n   Average distance from home";
+    cout << "\n       Including direct inserts            "<<l.counters[7]/l.counters[0];
+    cout << "\n       Not including direct inserts        "<<l.counters[7]/l.counters[5];
+    cout << "\n       Largest distance                    "<<l.counters[12]<<"  "<<l.counters[13];
+    cout << "\nSearches";
+    cout << "\n   Number of searches                      "<<l.counters[6];
+    cout << "\n   Number of comparisons";
+    cout << "\n       Total number of comparisons";
+    cout << "\n       Number of direct accesses";
+    cout << "\n       Number of indirect accesses";
+    cout << "\n       Average number of comparisons";
+    cout << "\n       Largest number of comparisons";
+}
+
 
 
 int main() {
@@ -193,7 +215,7 @@ int main() {
     LinearOpenHash linearHash;
     linearHash.insertRandomValues();
     linearHash.printArrays("test");
-    //linearHash.printMetrics();
+    printMetrics(linearHash);
 
 
 
