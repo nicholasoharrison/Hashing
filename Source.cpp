@@ -66,6 +66,7 @@ public:
                 return;
             }
             index = (index + 1) % ARRAY_SIZE;
+            counters[7]++; // Total distance from home (0 if direct insert)
             comparisons++;
         }
 
@@ -155,12 +156,11 @@ public:
         if (comparisons == 0) {
             counters[1]++; // Unique values
             counters[4]++; // Direct inserts
-            counters[6] += abs(homeBucket - hashFunction(linearOpenArray[counters[0] - 1].keyValue)); // Total distance from home with direct inserts
+            // Total distance from home for direct inserts will always be 0
         }
         else {
             counters[2]++; // Duplicates
             counters[5]++; // Non-direct inserts
-            counters[7] += abs(homeBucket - hashFunction(linearOpenArray[counters[0] - 1].keyValue)); // Total distance from home excluding direct inserts
         }
 
         counters[8] += comparisons; // Total comparisons
