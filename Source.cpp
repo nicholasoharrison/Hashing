@@ -9,6 +9,8 @@ using namespace std;
 #define ARRAY_SIZE 100
 #define FINAL_ARRAY_SIZE 1000
 
+
+
 // Data structure for hash node
 struct HashNode {
     int keyValue;
@@ -16,12 +18,17 @@ struct HashNode {
     int chainIndex; // -1 value indicates not used or end of chain
 };
 
+
+
 // Linear Open Addressing Hash Table
 class LinearOpenHash {
 
 private:
     HashNode linearOpenArray[ARRAY_SIZE];
+    int insertionOrderArray[ARRAY_SIZE]; // Array to store values in the order they were inserted
+    int insertionOrderIndex; // Index to track the position in the insertion order array
 
+public:
 
 public:
     // Metric counters array
@@ -31,7 +38,7 @@ public:
 
     LinearOpenHash() {
         resetCounters();
-        counters[13] = 0;
+        insertionOrderIndex = 0;
     }
     
 
@@ -45,6 +52,7 @@ public:
             linearOpenArray[i].keyValue = 0;
             linearOpenArray[i].keyCount = 0;
             linearOpenArray[i].chainIndex = -1;
+            insertionOrderArray[i] = 0;
         }
     }
 
@@ -66,7 +74,6 @@ public:
                 linearOpenArray[index].keyCount++;
                 counters[3]++; // Duplicate values
                 counters[0]++;
-                //calculateMetrics(homeBucket, comparisons);
                 return;
             }
             
@@ -100,36 +107,55 @@ public:
             counters[13] = linearOpenArray[index].keyValue;
         }
 
-        //calculateMetrics(homeBucket, comparisons);
+        if (insertionOrderIndex < ARRAY_SIZE) {
+            insertionOrderArray[insertionOrderIndex] = value;
+            insertionOrderIndex++;
+        }
+        else {
+            cout << "\nInsertion order array is full." << endl;
+        }
+
+
     }
 
 
 
-    bool search(int value, int& comparisons) {
-        counters[6]++;
-        int index = hashFunction(value);
-        int homeBucket = index;
-        comparisons = 0;
+    bool search() {
 
-        while (linearOpenArray[index].chainIndex != -1) {
-            if (linearOpenArray[index].keyValue == value) {
+        counters[6]++;
+
+        for (int i = 0; i < ARRAY_SIZE; i++)
+        {
+            int homeBucket = hashFunction(insertionOrderArray[i]);
+            int index = homeBucket;
+            int comparisons = 0;
+            while (linearOpenArray[i].chainIndex != -1) {
+                if (comparisons > 1 && index == homeBucket)
+                {
+                    std::cout << "\n\nValue "<<insertionOrderArray[i]<<" not found in hash table.\n\n";
+                    //return false;
+                }
+                if (linearOpenArray[i].keyValue == insertionOrderArray[i]) {
+                    comparisons++;
+                    counters[8]++; // Total comparisons
+                    if (comparisons > counters[9]) {
+                        counters[9] = comparisons; // Largest number of comparisons
+                    }
+                    if (index == homeBucket) {
+                        counters[10]++; // Direct accesses
+                    }
+                    else {
+                        counters[11]++; // Indirect accesses
+                    }
+                    //return true;
+                }
+                index = (index + 1) % ARRAY_SIZE;
                 comparisons++;
-                counters[8]++; // Total comparisons
-                if (comparisons > counters[9]) {
-                    counters[9] = comparisons; // Largest number of comparisons
-                }
-                if (index == homeBucket) {
-                    counters[10]++; // Direct accesses
-                }
-                else {
-                    counters[11]++; // Indirect accesses
-                }
-                return true;
             }
-            index = (index + 1) % ARRAY_SIZE;
-            comparisons++;
         }
-        return false;
+
+        return true;
+
     }
 
 
@@ -198,11 +224,11 @@ void printMetrics(LinearOpenHash l) {
     cout << "\nSearches";
     cout << "\n   Number of searches                      "<<l.counters[6];
     cout << "\n   Number of comparisons";
-    cout << "\n       Total number of comparisons";
-    cout << "\n       Number of direct accesses";
-    cout << "\n       Number of indirect accesses";
-    cout << "\n       Average number of comparisons";
-    cout << "\n       Largest number of comparisons";
+    cout << "\n       Total number of comparisons         "<<l.counters[8];
+    cout << "\n       Number of direct accesses           "<<l.counters[10];
+    cout << "\n       Number of indirect accesses         "<<l.counters[11];
+    cout << "\n       Average number of comparisons       "<<l.counters[8]/l.counters[6];
+    cout << "\n       Largest number of comparisons       "<<l.counters[9];
 }
 
 
@@ -215,6 +241,7 @@ int main() {
     LinearOpenHash linearHash;
     linearHash.insertRandomValues();
     linearHash.printArrays("test");
+    linearHash.search();
     printMetrics(linearHash);
 
 
