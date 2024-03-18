@@ -121,23 +121,20 @@ public:
 
 
     bool search() {
-
-        counters[6]++;
-
-        for (int i = 0; i < ARRAY_SIZE; i++)
-        {
+        for (int i = 0; i < insertionOrderIndex; i++) {
+            counters[6]++;
             int homeBucket = hashFunction(insertionOrderArray[i]);
             int index = homeBucket;
             int comparisons = 0;
-            while (linearOpenArray[i].chainIndex != -1) {
-                if (comparisons > 1 && index == homeBucket)
-                {
-                    std::cout << "\n\nValue "<<insertionOrderArray[i]<<" not found in hash table.\n\n";
-                    //return false;
+
+            while (linearOpenArray[index].keyValue != 0) {
+                if (comparisons > 1 && index == homeBucket) {
+                    std::cout << "\n\nValue " << insertionOrderArray[i] << " not found in hash table.\n\n";
+                    break;
                 }
-                if (linearOpenArray[i].keyValue == insertionOrderArray[i]) {
+                if (linearOpenArray[index].keyValue == insertionOrderArray[i]) {
                     comparisons++;
-                    counters[8]++; // Total comparisons
+                    counters[8] += comparisons; // Increment total comparisons
                     if (comparisons > counters[9]) {
                         counters[9] = comparisons; // Largest number of comparisons
                     }
@@ -147,7 +144,7 @@ public:
                     else {
                         counters[11]++; // Indirect accesses
                     }
-                    //return true;
+                    break; // Break out of the while loop once the value is found
                 }
                 index = (index + 1) % ARRAY_SIZE;
                 comparisons++;
@@ -155,7 +152,6 @@ public:
         }
 
         return true;
-
     }
 
 
