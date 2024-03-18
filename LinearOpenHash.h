@@ -162,26 +162,16 @@ public:
 
 
 
-    void insertValuesFromFile(string filename) {
-        ifstream file(filename);
-        if (file.is_open()) {
-            int value;
-            while (file >> value) {
-                linearProbingInsert(value);
-            }
-            file.close();
-        }
-        else {
-            cout << "Unable to open file " << filename << endl;
+    void printArrayToFile(string testName) {
+        string filename = testName + "_lineararray.txt";
+        ofstream outputFile(filename);
+        outputFile << "Arrays for Test: " << testName << endl;
+        outputFile << "Linear Open Addressing Array:" << endl;
+        outputFile << "Index    Key Value     Count" << endl;
+        for (int i = 0; i < ARRAY_SIZE; ++i) {
+            outputFile << i << "         " << linearOpenArray[i].keyValue << "            " << linearOpenArray[i].keyCount << endl;
         }
     }
-
-
-
-   
-
-
-
 
 
 
