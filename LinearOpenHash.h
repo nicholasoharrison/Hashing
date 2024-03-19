@@ -15,7 +15,7 @@ struct HashNode {
 
 
 
-// Linear Open Addressing Hash Table
+// Linear Open Addressing Hash Table Class
 class LinearOpenHash {
 
 private:
@@ -33,7 +33,7 @@ public:
 
     LinearOpenHash() {
         resetCounters();
-        insertionOrderIndex = 0;
+        insertionOrderIndex = 0; // Stores value for where the next open index is in the search queue array
     }
 
 
@@ -77,9 +77,8 @@ public:
             comparisons++;
         }
 
-        if (dupValStart == counters[3])
-        {
-            counters[1]++; //Unique values
+        if (dupValStart == counters[3]){
+            counters[1]++; // Unique values incremented if duplicate values counter is NOT incremented
         }
 
         linearOpenArray[index].keyValue = value;
@@ -92,18 +91,17 @@ public:
             counters[4]++; // Direct inserts
         }
         else {
-            counters[2]++; // Duplicate of bucket
+            counters[2]++; // Duplicate of bucket (collision)
             counters[5]++; // Non-direct inserts
         }
 
-        if (comparisons > counters[12])
-        {
-            counters[12] = comparisons;
-            counters[13] = linearOpenArray[index].keyValue;
+        if (comparisons > counters[12]){
+            counters[12] = comparisons; // Largest distance from home
+            counters[13] = linearOpenArray[index].keyValue; // Hash node key value that is farthest from home
         }
 
         if (insertionOrderIndex < ARRAY_SIZE) {
-            insertionOrderArray[insertionOrderIndex] = value;
+            insertionOrderArray[insertionOrderIndex] = value; // Store inserted hash node in the search queue
             insertionOrderIndex++;
         }
         else {
@@ -117,7 +115,7 @@ public:
 
     bool search() {
         for (int i = 0; i < insertionOrderIndex; i++) {
-            counters[6]++;
+            counters[6]++; // Total number of searches
             int homeBucket = hashFunction(insertionOrderArray[i]);
             int index = homeBucket;
             int comparisons = 0;
@@ -139,9 +137,9 @@ public:
                     else {
                         counters[11]++; // Indirect accesses
                     }
-                    break; // Break out of the while loop once the value is found
+                    break; // Break out of the while loop once the value is found and go to next value in search queue array
                 }
-                index = (index + 1) % ARRAY_SIZE;
+                index = (index + 1) % ARRAY_SIZE; // Wraps arround to beginning of table if > ARRAY_SIZE
                 comparisons++;
             }
         }
