@@ -64,7 +64,7 @@ public:
         int comparisons = 0;
         int dupValStart = counters[3];
 
-        while (linearOpenArray[index].keyValue != 0) {
+        while (linearOpenArray[index].keyValue != 0 || linearOpenArray[index].keyCount > 0) {
             if (linearOpenArray[index].keyValue == value) {
                 linearOpenArray[index].keyCount++;
                 counters[3]++; // Duplicate values
