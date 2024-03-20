@@ -5,6 +5,7 @@
 #include <ctime>
 #include <sstream>
 #include "LinearOpenHash.h"
+#include "ChainedOverflowHash.h"
 
 using namespace std;
 
@@ -91,7 +92,7 @@ void insertRandomValues(LinearOpenHash &l) {
 
 
 
-void insertValuesFromFile(const string& filename, LinearOpenHash &l) {
+void insertValuesFromFile(const string& filename, LinearOpenHash &l, ChainedOverflowHash &c) {
     ifstream file(filename);
     if (file.is_open()) {
         string line;
@@ -102,7 +103,8 @@ void insertValuesFromFile(const string& filename, LinearOpenHash &l) {
                 cout << "\nError: Non-integer value detected in file." << endl;
                 continue; // Move to the next line
             }
-            l.linearProbingInsert(value);
+            //l.linearProbingInsert(value);
+            c.chainedOverflowInsert(value);
         }
         file.close();
     }
@@ -114,7 +116,7 @@ void insertValuesFromFile(const string& filename, LinearOpenHash &l) {
 
 int main() {
     LinearOpenHash linearHash;
-
+    ChainedOverflowHash chainHash;
 
     char inputChoice;
     cout << "Do you want to input random data (R) or data from a file (F)? ";
@@ -130,7 +132,7 @@ int main() {
 
         ifstream file(filename);
         if (file.is_open()) {
-            insertValuesFromFile(filename, linearHash);
+            insertValuesFromFile(filename, linearHash, chainHash);
             file.close();
         }
         else {
@@ -149,13 +151,14 @@ int main() {
     cin >> testName;
 
     // Print the arrays for the test
-    linearHash.printArrays(testName);
-    linearHash.printArrayToFile(testName);
-    linearHash.search();
+    //linearHash.printArrays(testName);
+    //linearHash.printArrayToFile(testName);
+    //linearHash.search();
+    chainHash.printArrays(testName);
 
     // Print metrics
-    printMetrics(linearHash);
-    printMetricsToFile(testName, linearHash);
+    //printMetrics(linearHash);
+    //printMetricsToFile(testName, linearHash);
 
     return 0;
 }

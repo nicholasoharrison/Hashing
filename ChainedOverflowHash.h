@@ -2,19 +2,27 @@
 
 #define ARRAY_SIZE 100
 
+#include <iostream>
+#include "HashNode.h"
+
 using namespace std;
 
-#include "HashNode.h"
+
+
 
 
 // Linear Open Addressing Hash Table Class
-class LinearOpenHash {
+class ChainedOverflowHash {
 
 private:
-    HashNode linearOpenArray[ARRAY_SIZE];
+    HashNode mainChainArray[ARRAY_SIZE];
+    HashNode overflowArray[ARRAY_SIZE];
     int insertionOrderArray[ARRAY_SIZE]; // Array to store values in the order they were inserted
     int insertionOrderIndex; // Index to track the position in the insertion order array
     bool isFull;
+    int overflowIndex;
+
+public:
 
 public:
     // Metric counters array
@@ -22,13 +30,14 @@ public:
 
 
 
-    LinearOpenHash() {
+    ChainedOverflowHash() {
         resetCounters();
         isFull = false;
+        overflowIndex = 0;
         insertionOrderIndex = 0; // Stores value for where the next open index is in the search queue array
     }
 
-
+    
 
     void resetCounters() {
         for (int i = 0; i < 14; i++) {
@@ -36,85 +45,74 @@ public:
         }
 
         for (int i = 0; i < ARRAY_SIZE; i++) {
-            linearOpenArray[i].keyValue = 0;
-            linearOpenArray[i].keyCount = 0;
-            linearOpenArray[i].chainIndex = -1;
+            mainChainArray[i].keyValue = 0;
+            mainChainArray[i].keyCount = 0;
+            mainChainArray[i].chainIndex = -1;
             insertionOrderArray[i] = 0;
+            overflowArray[i].keyValue = 0;
+            overflowArray[i].keyCount = 0;
+            overflowArray[i].chainIndex = -1;
         }
     }
 
 
+   
     int hashFunction(int value) {
         return value % ARRAY_SIZE;
     }
 
+    
 
-
-    void linearProbingInsert(int value) {
+    void chainedOverflowInsert(int value) {
         if (isFull) {
             cout << "\nERROR:  Hash table full!!!";
             return; // Does not proceed to insert if the hash table is full
         }
         int index = hashFunction(value);
         int homeBucket = index;
-        int comparisons = 0;
-        int dupValStart = counters[3];
+        int distance = 0;
+        int tempIndex;
 
-        while (linearOpenArray[index].keyValue != 0 || linearOpenArray[index].keyCount > 0) {
-            if (linearOpenArray[index].keyValue == value) {
-                linearOpenArray[index].keyCount++;
-                counters[3]++; // Duplicate values
-                counters[0]++;
-                counters[4]++; // Direct insert
-                return;
-            }
-
-            if (index == homeBucket && comparisons > 0){
-                cout << "\nERROR:  Hash table full!!!";
-                isFull = true;
-                return;
-            }
-
-            index = (index + 1) % ARRAY_SIZE;
-            counters[7]++; // Total distance from home (0 if direct insert)
-            comparisons++;
+        if (mainChainArray[homeBucket].keyValue == value) { // Duplicate value found in home bucket
+            mainChainArray[homeBucket].keyCount++;
+            return;
         }
 
-        if (dupValStart == counters[3]){
-            counters[1]++; // Unique values incremented if duplicate values counter is NOT incremented
+        if (mainChainArray[homeBucket].keyValue == 0 || (mainChainArray[homeBucket].keyValue == 0 && mainChainArray[homeBucket].keyCount == 0)){ // Direct insert since nothing is in home bucket
+            mainChainArray[homeBucket].keyValue = value;
+            mainChainArray[homeBucket].keyCount = 1;
+            return;
         }
-
-        linearOpenArray[index].keyValue = value;
-        linearOpenArray[index].keyCount = 1;
-        linearOpenArray[index].chainIndex = -1;
-
-        counters[0]++; // Total values inserted
-
-        if (comparisons == 0) {
-            counters[4]++; // Direct inserts
+        if (mainChainArray[homeBucket].chainIndex == -1) { // Insert to next value in overflow table since the home bucket does not have any chained
+            overflowArray[overflowIndex].keyValue = value;
+            overflowArray[overflowIndex].keyCount = 1;
+            mainChainArray[homeBucket].chainIndex = overflowIndex;
+            overflowIndex++;
+            distance++;
+            return;
         }
         else {
-            counters[2]++; // Duplicate of bucket (collision)
-            counters[5]++; // Non-direct inserts
-        }
+            index = mainChainArray[homeBucket].chainIndex;
+            while (overflowArray[index].chainIndex != -1){
+                if (overflowArray[index].keyValue == value) { // Duplicate value found in overflow array
+                    overflowArray[index].keyCount++;
+                    // Update counters for duplcate found in overflow
+                    return;
+                }
+                distance++;
+                tempIndex = index;
+                index = overflowArray[tempIndex].chainIndex;
+            }
+            overflowArray[index].chainIndex = overflowIndex;
+            overflowArray[overflowIndex].keyValue = value;
+            overflowArray[overflowIndex].keyCount = 1;
+            overflowIndex++;
 
-        if (comparisons > counters[12]){
-            counters[12] = comparisons; // Largest distance from home
-            counters[13] = linearOpenArray[index].keyValue; // Hash node key value that is farthest from home
         }
-
-        if (insertionOrderIndex < ARRAY_SIZE) {
-            insertionOrderArray[insertionOrderIndex] = value; // Store inserted hash node in the search queue
-            insertionOrderIndex++;
-        }
-        else {
-            cout << "\nInsertion order array is full." << endl;
-        }
-
 
     }
 
-
+    /*
 
     bool search() {
         for (int i = 0; i < insertionOrderIndex; i++) {
@@ -150,18 +148,25 @@ public:
         return true;
     }
 
+    */
 
 
     void printArrays(string testName) {
         cout << "Arrays for Test: " << testName << endl;
-        cout << "Linear Open Addressing Array:" << endl;
+        cout << "Chained Overflow Main Array:" << endl;
         cout << "Index    Key Value     Count" << endl;
         for (int i = 0; i < ARRAY_SIZE; ++i) {
-            cout << i << "         " << linearOpenArray[i].keyValue << "            " << linearOpenArray[i].keyCount << endl;
+            cout << i << "         " << mainChainArray[i].keyValue << "            " << mainChainArray[i].keyCount << "            " << mainChainArray[i].chainIndex << endl;
+        }
+        cout << "-------------------------------------------------------------------------------------------------------------------------------------------------";
+        cout << "Chained Overflow OVERFLOW Array:" << endl;
+        cout << "Index    Key Value     Count" << endl;
+        for (int i = 0; i < ARRAY_SIZE; ++i) {
+            cout << i << "         " << overflowArray[i].keyValue << "            " << overflowArray[i].keyCount << "            " << overflowArray[i].chainIndex << endl;
         }
     }
 
-
+    /*
 
     void printArrayToFile(string testName) {
         string filename = testName + "_lineararray.txt";
@@ -173,6 +178,8 @@ public:
             outputFile << i << "         " << linearOpenArray[i].keyValue << "            " << linearOpenArray[i].keyCount << endl;
         }
     }
+
+    */
 
 
 
