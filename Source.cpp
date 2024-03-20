@@ -83,7 +83,7 @@ void printMetricsToFile(const string& testName, LinearOpenHash l) {
 
 void insertRandomValues(LinearOpenHash &l) {
     srand(time(nullptr));
-    for (int i = 0; i < ARRAY_SIZE + 5; i++) {
+    for (int i = 0; i < ARRAY_SIZE; i++) {
         int value = rand() % 10000; // Values between 0 and 9999
         l.linearProbingInsert(value);
     }
