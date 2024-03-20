@@ -68,6 +68,7 @@ public:
             cout << "\nERROR:  Hash table full!!!";
             return; // Does not proceed to insert if the hash table is full
         }
+        counters[0]++; // Total number of keys
         int index = hashFunction(value);
         int homeBucket = index;
         int distance = 0;
@@ -75,12 +76,14 @@ public:
 
         if (mainChainArray[homeBucket].keyValue == value) { // Duplicate value found in home bucket
             mainChainArray[homeBucket].keyCount++;
+            counters[3]++; // Duplicate value
             return;
         }
 
         if (mainChainArray[homeBucket].keyValue == 0 || (mainChainArray[homeBucket].keyValue == 0 && mainChainArray[homeBucket].keyCount == 0)){ // Direct insert since nothing is in home bucket
             mainChainArray[homeBucket].keyValue = value;
             mainChainArray[homeBucket].keyCount = 1;
+            counters[1]++; // Unique value
             return;
         }
         if (mainChainArray[homeBucket].chainIndex == -1) { // Insert to next value in overflow table since the home bucket does not have any chained
@@ -89,6 +92,8 @@ public:
             mainChainArray[homeBucket].chainIndex = overflowIndex;
             overflowIndex++;
             distance++;
+            counters[7]++;
+            counters[1]++; // Unique value
             return;
         }
         else {
@@ -96,10 +101,12 @@ public:
             while (overflowArray[index].chainIndex != -1){
                 if (overflowArray[index].keyValue == value) { // Duplicate value found in overflow array
                     overflowArray[index].keyCount++;
+                    counters[3]++;
                     // Update counters for duplcate found in overflow
                     return;
                 }
                 distance++;
+                counters[7]++;
                 tempIndex = index;
                 index = overflowArray[tempIndex].chainIndex;
             }
@@ -107,6 +114,11 @@ public:
             overflowArray[overflowIndex].keyValue = value;
             overflowArray[overflowIndex].keyCount = 1;
             overflowIndex++;
+
+            if (distance > counters[12])
+            {
+                counters[12] = distance;
+            }
 
         }
 
@@ -166,20 +178,26 @@ public:
         }
     }
 
-    /*
+    
 
     void printArrayToFile(string testName) {
         string filename = testName + "_lineararray.txt";
         ofstream outputFile(filename);
         outputFile << "Arrays for Test: " << testName << endl;
-        outputFile << "Linear Open Addressing Array:" << endl;
+        outputFile << "Chained Overflow Main Array:" << endl;
         outputFile << "Index    Key Value     Count" << endl;
         for (int i = 0; i < ARRAY_SIZE; ++i) {
-            outputFile << i << "         " << linearOpenArray[i].keyValue << "            " << linearOpenArray[i].keyCount << endl;
+            outputFile << i << "         " << mainChainArray[i].keyValue << "            " << mainChainArray[i].keyCount << "            " << mainChainArray[i].chainIndex << endl;
+        }
+        outputFile << "-------------------------------------------------------------------------------------------------------------------------------------------------";
+        outputFile << "Chained Overflow OVERFLOW Array:" << endl;
+        outputFile << "Index    Key Value     Count" << endl;
+        for (int i = 0; i < ARRAY_SIZE; ++i) {
+            outputFile << i << "         " << overflowArray[i].keyValue << "            " << overflowArray[i].keyCount << "            " << overflowArray[i].chainIndex << endl;
         }
     }
 
-    */
+    
 
 
 
