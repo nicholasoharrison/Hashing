@@ -22,6 +22,7 @@ private:
     HashNode linearOpenArray[ARRAY_SIZE];
     int insertionOrderArray[ARRAY_SIZE]; // Array to store values in the order they were inserted
     int insertionOrderIndex; // Index to track the position in the insertion order array
+    bool isFull;
 
 public:
 
@@ -33,6 +34,7 @@ public:
 
     LinearOpenHash() {
         resetCounters();
+        isFull = false;
         insertionOrderIndex = 0; // Stores value for where the next open index is in the search queue array
     }
 
@@ -59,6 +61,10 @@ public:
 
 
     void linearProbingInsert(int value) {
+        if (isFull) {
+            cout << "\nERROR:  Hash table full!!!";
+            return; // Does not proceed to insert if the hash table is full
+        }
         int index = hashFunction(value);
         int homeBucket = index;
         int comparisons = 0;
@@ -69,6 +75,12 @@ public:
                 linearOpenArray[index].keyCount++;
                 counters[3]++; // Duplicate values
                 counters[0]++;
+                return;
+            }
+
+            if (index == homeBucket && comparisons > 0){
+                cout << "\nERROR:  Hash table full!!!";
+                isFull = true;
                 return;
             }
 

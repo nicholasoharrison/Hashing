@@ -83,7 +83,7 @@ void printMetricsToFile(const string& testName, LinearOpenHash l) {
 
 void insertRandomValues(LinearOpenHash &l) {
     srand(time(nullptr));
-    for (int i = 0; i < ARRAY_SIZE; ++i) {
+    for (int i = 0; i < ARRAY_SIZE + 5; i++) {
         int value = rand() % 10000; // Values between 0 and 9999
         l.linearProbingInsert(value);
     }
@@ -145,7 +145,7 @@ int main() {
 
     // Ask the user for the name of the test being performed
     string testName;
-    cout << "Enter the name of the test: ";
+    cout << "\n\nEnter the name of the test: ";
     cin >> testName;
 
     // Print the arrays for the test
