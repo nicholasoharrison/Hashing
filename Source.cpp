@@ -12,22 +12,22 @@ using namespace std;
 
 
 
-void printMetrics(LinearOpenHash l) {
+void printMetrics(LinearOpenHash l, ChainedOverflowHash c) {
     cout << "          \n\n\n\n                                  Operation Counts";
     cout << "\n                                          Linear                      Chained";
-    cout << "\nNumber of key values inserted              "<<l.counters[0];
-    cout << "\n   Unique values                           "<<l.counters[1];
-    cout << "\n   Duplicate values                        "<<l.counters[3];
+    cout << "\nNumber of key values inserted              "<<l.counters[0] << "                          " << c.counters[0];
+    cout << "\n   Unique values                           "<<l.counters[1] << "                          " << c.counters[1];
+    cout << "\n   Duplicate values                        "<<l.counters[3] << "                            " << c.counters[3];;
     cout << "\n";
     cout << "\nCollisions";
-    cout << "\n   Number of collisions                    "<<l.counters[2];
+    cout << "\n   Number of collisions                    "<<l.counters[2] << "                           " << c.counters[2];
     cout << "\n  Distance from home bucket";
-    cout << "\n       Number of direct inserts            "<<l.counters[4]<<"   " << (100.0*l.counters[4] / (l.counters[5] + l.counters[4]))<< "%";
-    cout << "\n       Number of non-direct inserts        "<<l.counters[5]<<"   "<<(100.0*l.counters[5]/(l.counters[5]+l.counters[4])) << "%";
+    cout << "\n       Number of direct inserts            "<<l.counters[4]<<"   " << (100.0*l.counters[4] / (l.counters[5] + l.counters[4]))<< "%" << "                     " << c.counters[4] << "   " << (100.0 * c.counters[4] / (c.counters[5] + c.counters[4])) << "%";
+    cout << "\n       Number of non-direct inserts        "<<l.counters[5]<<"   "<<(100.0*l.counters[5]/(l.counters[5]+l.counters[4])) << "%" << "                     " << c.counters[5] << "   " << (100.0 * c.counters[5] / (c.counters[5] + c.counters[4])) << "%";
     cout << "\n   Average distance from home";
-    cout << "\n       Including direct inserts            "<<l.counters[7]/l.counters[0];
-    cout << "\n       Not including direct inserts        "<<l.counters[7]/l.counters[5];
-    cout << "\n       Largest distance                    "<<l.counters[12]<<" for value: "<<l.counters[13];
+    cout << "\n       Including direct inserts            "<<1.0*l.counters[7]/l.counters[0] << "                        " << 1.0*c.counters[7] / c.counters[0];
+    cout << "\n       Not including direct inserts        "<<1.0*l.counters[7]/l.counters[5] << "                      " << 1.0*c.counters[7] / c.counters[5];
+    cout << "\n       Largest distance                    "<<l.counters[12]<<" for value: "<<l.counters[13] << "           " << c.counters[12] << " for value: " << c.counters[13];
     cout << "\n";
     cout << "\nSearches";
     cout << "\n   Number of searches                      "<<l.counters[6];
@@ -42,25 +42,25 @@ void printMetrics(LinearOpenHash l) {
 
 
 
-void printMetricsToFile(const string& testName, LinearOpenHash l) {
+void printMetricsToFile(const string& testName, LinearOpenHash l, ChainedOverflowHash c) {
     string filename = testName + ".txt";
     ofstream outputFile(filename);
     if (outputFile.is_open()) {
         outputFile << "          \n\n\n\n                                  Operation Counts";
         outputFile << "\n                                          Linear                      Chained";
-        outputFile << "\nNumber of key values inserted              " << l.counters[0];
-        outputFile << "\n   Unique values                           " << l.counters[1];
-        outputFile << "\n   Duplicate values                        " << l.counters[3];
+        outputFile << "\nNumber of key values inserted              " << l.counters[0] << "             " << c.counters[0];
+        outputFile << "\n   Unique values                           " << l.counters[1] << "             " << c.counters[1];
+        outputFile << "\n   Duplicate values                        " << l.counters[3] << "             " << c.counters[3];
         outputFile << "\n";
         outputFile << "\nCollisions";
-        outputFile << "\n   Number of collisions                    " << l.counters[2];
+        outputFile << "\n   Number of collisions                    " << l.counters[2] << "             " << c.counters[2];
         outputFile << "\n  Distance from home bucket";
-        outputFile << "\n       Number of direct inserts            " << l.counters[4] << "   " << (100.0 * l.counters[4] / (l.counters[5] + l.counters[4])) << "%";
-        outputFile << "\n       Number of non-direct inserts        " << l.counters[5] << "   " << (100.0 * l.counters[5] / (l.counters[5] + l.counters[4])) << "%";
+        outputFile << "\n       Number of direct inserts            " << l.counters[4] << "   " << (100.0 * l.counters[4] / (l.counters[5] + l.counters[4])) << "%" << "             " << c.counters[4] << "   " << (100.0 * c.counters[4] / (c.counters[5] + c.counters[4])) << "%";
+        outputFile << "\n       Number of non-direct inserts        " << l.counters[5] << "   " << (100.0 * l.counters[5] / (l.counters[5] + l.counters[4])) << "%" << "             " << c.counters[5] << "   " << (100.0 * c.counters[5] / (c.counters[5] + c.counters[4])) << "%";
         outputFile << "\n   Average distance from home";
-        outputFile << "\n       Including direct inserts            " << l.counters[7] / l.counters[0];
-        outputFile << "\n       Not including direct inserts        " << l.counters[7] / l.counters[5];
-        outputFile << "\n       Largest distance                    " << l.counters[12] << " for value: " << l.counters[13];
+        outputFile << "\n       Including direct inserts            " << l.counters[7] / l.counters[0] << "             " << c.counters[7] / c.counters[0];
+        outputFile << "\n       Not including direct inserts        " << l.counters[7] / l.counters[5] << "             " << c.counters[7] / c.counters[5];
+        outputFile << "\n       Largest distance                    " << l.counters[12] << " for value: " << l.counters[13] << "             " << c.counters[12] << " for value: " << c.counters[13];
         outputFile << "\n";
         outputFile << "\nSearches";
         outputFile << "\n   Number of searches                      " << l.counters[6];
@@ -82,11 +82,12 @@ void printMetricsToFile(const string& testName, LinearOpenHash l) {
 
 
 
-void insertRandomValues(LinearOpenHash &l) {
+void insertRandomValues(LinearOpenHash &l, ChainedOverflowHash &c) {
     srand(time(nullptr));
     for (int i = 0; i < ARRAY_SIZE; i++) {
         int value = rand() % 10000; // Values between 0 and 9999
         l.linearProbingInsert(value);
+        c.chainedOverflowInsert(value);
     }
 }
 
@@ -103,7 +104,7 @@ void insertValuesFromFile(const string& filename, LinearOpenHash &l, ChainedOver
                 cout << "\nError: Non-integer value detected in file." << endl;
                 continue; // Move to the next line
             }
-            //l.linearProbingInsert(value);
+            l.linearProbingInsert(value);
             c.chainedOverflowInsert(value);
         }
         file.close();
@@ -123,7 +124,7 @@ int main() {
     cin >> inputChoice;
 
     if (inputChoice == 'R' || inputChoice == 'r') {
-        insertRandomValues(linearHash);
+        insertRandomValues(linearHash, chainHash);
     }
     else if (inputChoice == 'F' || inputChoice == 'f') {
         string filename;
@@ -151,14 +152,16 @@ int main() {
     cin >> testName;
 
     // Print the arrays for the test
-    //linearHash.printArrays(testName);
-    //linearHash.printArrayToFile(testName);
-    //linearHash.search();
+    linearHash.printArrays(testName);
+    linearHash.printArrayToFile(testName);
+    linearHash.search();
+    
     chainHash.printArrays(testName);
+    chainHash.printArrayToFile(testName);
 
     // Print metrics
-    //printMetrics(linearHash);
-    //printMetricsToFile(testName, linearHash);
+    printMetrics(linearHash, chainHash);
+    printMetricsToFile(testName, linearHash, chainHash);
 
     return 0;
 }

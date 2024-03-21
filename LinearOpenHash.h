@@ -156,7 +156,7 @@ public:
         cout << "Arrays for Test: " << testName << endl;
         cout << "Linear Open Addressing Array:" << endl;
         cout << "Index    Key Value     Count" << endl;
-        for (int i = 0; i < ARRAY_SIZE; ++i) {
+        for (int i = 0; i < ARRAY_SIZE; i++) {
             cout << i << "         " << linearOpenArray[i].keyValue << "            " << linearOpenArray[i].keyCount << endl;
         }
     }
@@ -169,7 +169,7 @@ public:
         outputFile << "Arrays for Test: " << testName << endl;
         outputFile << "Linear Open Addressing Array:" << endl;
         outputFile << "Index    Key Value     Count" << endl;
-        for (int i = 0; i < ARRAY_SIZE; ++i) {
+        for (int i = 0; i < ARRAY_SIZE; i++) {
             outputFile << i << "         " << linearOpenArray[i].keyValue << "            " << linearOpenArray[i].keyCount << endl;
         }
     }

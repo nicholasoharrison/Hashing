@@ -77,6 +77,7 @@ public:
         if (mainChainArray[homeBucket].keyValue == value) { // Duplicate value found in home bucket
             mainChainArray[homeBucket].keyCount++;
             counters[3]++; // Duplicate value
+            counters[4]++; // Direct inserts
             return;
         }
 
@@ -84,6 +85,7 @@ public:
             mainChainArray[homeBucket].keyValue = value;
             mainChainArray[homeBucket].keyCount = 1;
             counters[1]++; // Unique value
+            counters[4]++; // Direct inserts
             return;
         }
         if (mainChainArray[homeBucket].chainIndex == -1) { // Insert to next value in overflow table since the home bucket does not have any chained
@@ -92,32 +94,42 @@ public:
             mainChainArray[homeBucket].chainIndex = overflowIndex;
             overflowIndex++;
             distance++;
-            counters[7]++;
+            counters[2]++; // Collisions
+            counters[7]++; // Total distance from home
+            counters[5]++; // Non-direct inserts
             counters[1]++; // Unique value
             return;
         }
         else {
             index = mainChainArray[homeBucket].chainIndex;
+            distance++; // Starting one value away from the home bucket
+            counters[2]++; // Collisions
+            counters[5]++; // Non-direct inserts
             while (overflowArray[index].chainIndex != -1){
                 if (overflowArray[index].keyValue == value) { // Duplicate value found in overflow array
                     overflowArray[index].keyCount++;
-                    counters[3]++;
-                    // Update counters for duplcate found in overflow
+                    counters[3]++; // Duplicate value
                     return;
                 }
+
                 distance++;
-                counters[7]++;
+                
+                
                 tempIndex = index;
                 index = overflowArray[tempIndex].chainIndex;
             }
+            distance++; // Adds one to distance because it is inserted after the previous end of the chain
             overflowArray[index].chainIndex = overflowIndex;
+            counters[1]++;
             overflowArray[overflowIndex].keyValue = value;
             overflowArray[overflowIndex].keyCount = 1;
+            counters[7] += distance;
             overflowIndex++;
 
             if (distance > counters[12])
             {
-                counters[12] = distance;
+                counters[12] = distance; // Largest distance from home
+                counters[13] = value; // Value that is farthest from home
             }
 
         }
@@ -167,13 +179,13 @@ public:
         cout << "Arrays for Test: " << testName << endl;
         cout << "Chained Overflow Main Array:" << endl;
         cout << "Index    Key Value     Count" << endl;
-        for (int i = 0; i < ARRAY_SIZE; ++i) {
+        for (int i = 0; i < ARRAY_SIZE; i++) {
             cout << i << "         " << mainChainArray[i].keyValue << "            " << mainChainArray[i].keyCount << "            " << mainChainArray[i].chainIndex << endl;
         }
         cout << "-------------------------------------------------------------------------------------------------------------------------------------------------";
         cout << "Chained Overflow OVERFLOW Array:" << endl;
         cout << "Index    Key Value     Count" << endl;
-        for (int i = 0; i < ARRAY_SIZE; ++i) {
+        for (int i = 0; i < ARRAY_SIZE; i++) {
             cout << i << "         " << overflowArray[i].keyValue << "            " << overflowArray[i].keyCount << "            " << overflowArray[i].chainIndex << endl;
         }
     }
@@ -181,18 +193,18 @@ public:
     
 
     void printArrayToFile(string testName) {
-        string filename = testName + "_lineararray.txt";
+        string filename = testName + "_chainedarray.txt";
         ofstream outputFile(filename);
         outputFile << "Arrays for Test: " << testName << endl;
         outputFile << "Chained Overflow Main Array:" << endl;
         outputFile << "Index    Key Value     Count" << endl;
-        for (int i = 0; i < ARRAY_SIZE; ++i) {
+        for (int i = 0; i < ARRAY_SIZE; i++) {
             outputFile << i << "         " << mainChainArray[i].keyValue << "            " << mainChainArray[i].keyCount << "            " << mainChainArray[i].chainIndex << endl;
         }
         outputFile << "-------------------------------------------------------------------------------------------------------------------------------------------------";
         outputFile << "Chained Overflow OVERFLOW Array:" << endl;
         outputFile << "Index    Key Value     Count" << endl;
-        for (int i = 0; i < ARRAY_SIZE; ++i) {
+        for (int i = 0; i < ARRAY_SIZE; i++) {
             outputFile << i << "         " << overflowArray[i].keyValue << "            " << overflowArray[i].keyCount << "            " << overflowArray[i].chainIndex << endl;
         }
     }
