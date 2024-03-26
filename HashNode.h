@@ -1,5 +1,7 @@
 #pragma once
 
+#define ARRAY_SIZE 100
+
 // Data structure for hash node
 struct HashNode {
     int keyValue;

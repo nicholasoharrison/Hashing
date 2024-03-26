@@ -1,0 +1,30 @@
+          
+
+
+
+                                  Operation Counts
+                                          Linear                      Chained
+Number of key values inserted              100                          180
+   Unique values                           100                          179
+   Duplicate values                        0                            1
+
+Collisions
+   Number of collisions                    42                           101
+  Distance from home bucket
+       Number of direct inserts            58   58%                     79   43.8889%
+       Number of non-direct inserts        42   42%                     101   56.1111%
+   Average distance from home
+       Including direct inserts            6.33                        0.961111
+       Not including direct inserts        15.0714                      1.71287
+       Largest distance                    93 for value: 750           5 for value: 1173
+
+Searches
+   Number of searches                      100                          100
+   Number of comparisons
+       Total number of comparisons         633                          167
+       Number of direct accesses           58   58%                    68   68%
+       Number of indirect accesses         42   42%                    32   32%
+       Average number of comparisons       6.33                             1.67
+       Largest number of comparisons       94                            3
+
+

@@ -4,27 +4,27 @@
 
                                   Operation Counts
                                           Linear                      Chained
-Number of key values inserted              100
-   Unique values                           100
-   Duplicate values                        0
+Number of key values inserted              100                          100
+   Unique values                           100                          100
+   Duplicate values                        0                            0
 
 Collisions
-   Number of collisions                    47
+   Number of collisions                    46                           35
   Distance from home bucket
-       Number of direct inserts            53   53%
-       Number of non-direct inserts        47   47%
+       Number of direct inserts            54   54%                     65   65%
+       Number of non-direct inserts        46   46%                     35   35%
    Average distance from home
-       Including direct inserts            3
-       Not including direct inserts        6
-       Largest distance                    31 for value: 2511
+       Including direct inserts            4.78                        0.48
+       Not including direct inserts        10.3913                      1.37143
+       Largest distance                    81 for value: 7392           3 for value: 5794
 
 Searches
-   Number of searches                      100
+   Number of searches                      100                          100
    Number of comparisons
-       Total number of comparisons         408
-       Number of direct accesses           53   53%
-       Number of indirect accesses         47   47%
-       Average number of comparisons       4
-       Largest number of comparisons       32
+       Total number of comparisons         578                          161
+       Number of direct accesses           54   54%                    65   65%
+       Number of indirect accesses         46   46%                    35   35%
+       Average number of comparisons       5.78                             1.61
+       Largest number of comparisons       82                            4
 
 

@@ -1,6 +1,5 @@
 #pragma once
 
-#define ARRAY_SIZE 100
 
 using namespace std;
 
@@ -52,9 +51,18 @@ public:
 
     void linearProbingInsert(int value) {
         if (isFull) {
-            cout << "\nERROR:  Hash table full!!!";
+            cout << "\nERROR:  Linear open addressing hash table full!!!";
             return; // Does not proceed to insert if the hash table is full
         }
+
+        if (insertionOrderIndex < ARRAY_SIZE) {
+            insertionOrderArray[insertionOrderIndex] = value; // Store inserted hash node in the search queue
+            insertionOrderIndex++;
+        }
+        else {
+            cout << "\nInsertion order array is full." << endl;
+        }
+
         int index = hashFunction(value);
         int homeBucket = index;
         int comparisons = 0;
@@ -70,7 +78,7 @@ public:
             }
 
             if (index == homeBucket && comparisons > 0){
-                cout << "\nERROR:  Hash table full!!!";
+                cout << "\nERROR:  Linear open addressing hash table full!!!";
                 isFull = true;
                 return;
             }
@@ -103,14 +111,7 @@ public:
             counters[13] = linearOpenArray[index].keyValue; // Hash node key value that is farthest from home
         }
 
-        if (insertionOrderIndex < ARRAY_SIZE) {
-            insertionOrderArray[insertionOrderIndex] = value; // Store inserted hash node in the search queue
-            insertionOrderIndex++;
-        }
-        else {
-            cout << "\nInsertion order array is full." << endl;
-        }
-
+        
 
     }
 
