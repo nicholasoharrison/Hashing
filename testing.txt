@@ -4,27 +4,27 @@
 
                                   Operation Counts
                                           Linear                      Chained
-Number of key values inserted              18             18
-   Unique values                           14             13
-   Duplicate values                        4             5
+Number of key values inserted              18                          18
+   Unique values                           14                          13
+   Duplicate values                        4                            5
 
 Collisions
-   Number of collisions                    6             7
+   Number of collisions                    6                           7
   Distance from home bucket
-       Number of direct inserts            12   66.6667%             11   61.1111%
-       Number of non-direct inserts        6   33.3333%             7   38.8889%
+       Number of direct inserts            12   66.6667%                     11   61.1111%
+       Number of non-direct inserts        6   33.3333%                     7   38.8889%
    Average distance from home
-       Including direct inserts            1             0
-       Not including direct inserts        3             1
-       Largest distance                    5 for value: 952             3 for value: 952
+       Including direct inserts            1                        0.888889
+       Not including direct inserts        3                      2.28571
+       Largest distance                    5 for value: 952           5 for value: 952
 
 Searches
-   Number of searches                      14
+   Number of searches                      18                          18
    Number of comparisons
-       Total number of comparisons         29
-       Number of direct accesses           7   53.8462%
-       Number of indirect accesses         6   46.1538%
-       Average number of comparisons       2
-       Largest number of comparisons       6
+       Total number of comparisons         35                          48
+       Number of direct accesses           10   58.8235%                    11   61.1111%
+       Number of indirect accesses         7   41.1765%                    7   38.8889%
+       Average number of comparisons       1.94444                             2.66667
+       Largest number of comparisons       6                            6
 
 

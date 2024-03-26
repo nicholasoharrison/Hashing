@@ -84,10 +84,11 @@ void printMetricsToFile(const string& testName, LinearOpenHash l, ChainedOverflo
 
 void insertRandomValues(LinearOpenHash &l, ChainedOverflowHash &c) {
     srand(time(nullptr));
-    for (int i = 0; i < ARRAY_SIZE*2; i++) {
+    for (int i = 0; i < (ARRAY_SIZE*2); i++) {
         int value = rand() % 10000; // Values between 0 and 9999
         l.linearProbingInsert(value);
         c.chainedOverflowInsert(value);
+        
     }
 }
 
@@ -118,7 +119,6 @@ void insertValuesFromFile(const string& filename, LinearOpenHash &l, ChainedOver
 int main() {
     LinearOpenHash linearHash;
     ChainedOverflowHash chainHash;
-
     char inputChoice;
     cout << "Do you want to input random data (R) or data from a file (F)? ";
     cin >> inputChoice;

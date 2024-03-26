@@ -23,10 +23,10 @@
     <ClInclude Include="LinearOpenHash.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="ChainedOverflowHash.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="HashNode.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ChainedOverflowHash.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
