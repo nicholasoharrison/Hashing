@@ -84,7 +84,7 @@ void printMetricsToFile(const string& testName, LinearOpenHash l, ChainedOverflo
 
 void insertRandomValues(LinearOpenHash &l, ChainedOverflowHash &c) {
     srand(time(nullptr));
-    for (int i = 0; i < (ARRAY_SIZE*2); i++) {
+    for (int i = 0; i < (ARRAY_SIZE); i++) {
         int value = rand() % 10000; // Values between 0 and 9999
         l.linearProbingInsert(value);
         c.chainedOverflowInsert(value);
@@ -103,7 +103,7 @@ void insertValuesFromFile(const string& filename, LinearOpenHash &l, ChainedOver
             int value;
             if (!(ss >> value)) {
                 cout << "\nError: Non-integer value detected in file." << endl;
-                continue; // Move to the next line
+                continue; 
             }
             l.linearProbingInsert(value);
             c.chainedOverflowInsert(value);
@@ -151,7 +151,7 @@ int main() {
     cout << "\n\nEnter the name of the test: ";
     cin >> testName;
 
-    // Print the arrays for the test
+    // Print the arrays to console and text file and perform search
     linearHash.printArrays(testName);
     linearHash.printArrayToFile(testName);
     linearHash.search();
@@ -160,7 +160,7 @@ int main() {
     chainHash.printArrayToFile(testName);
     chainHash.search();
 
-    // Print metrics
+    // Print metrics to console and file
     printMetrics(linearHash, chainHash);
     printMetricsToFile(testName, linearHash, chainHash);
 

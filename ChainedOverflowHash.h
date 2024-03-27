@@ -171,9 +171,9 @@ public:
             int comparisons = 0;
 
             if (mainChainArray[homeBucket].keyValue == insertionOrderArray[i]) {
-                counters[10]++;
+                counters[10]++; // Direct access
                 comparisons++;
-                counters[8] += comparisons;
+                counters[8] += comparisons; // Total number of comparisons
             }
             else {
                 if (mainChainArray[homeBucket].chainIndex == -1) {
@@ -186,9 +186,9 @@ public:
                 while (overflowArray[index].chainIndex != -1) {
                     if (overflowArray[index].keyValue == insertionOrderArray[i]) {
                         if (comparisons > counters[9]) {
-                            counters[9] = comparisons;
+                            counters[9] = comparisons; //Largest number of comparisons
                         }
-                        counters[8] += comparisons;
+                        counters[8] += comparisons;  // Total number of comparisons
                         break;
                     }
                     comparisons++;
@@ -198,11 +198,11 @@ public:
                 }
                 comparisons++;
                 if (overflowArray[index].keyValue == insertionOrderArray[i]) { // Value found at last chain index
-                    counters[11]++;
+                    counters[11]++; // Indirect access
                     if (comparisons > counters[9]) {
-                        counters[9] = comparisons;
+                        counters[9] = comparisons; // Largest number of comparisons
                     }
-                    counters[8] += comparisons;
+                    counters[8] += comparisons;  // Total number of comparisons
                 }
                 else {
                     cout << "\nValue not found: " << insertionOrderArray[i];
